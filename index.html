@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rishi & Soni</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Lucida Console", "Courier New", monospace;
+      background: linear-gradient(to bottom right, #4CAF50, #008CBA);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      text-align: center;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-gap: 5px;
+    }
+
+    .board button {
+      width: 100px;
+      height: 100px;
+      font-size: 24px;
+    }
+
+    .status {
+      margin-top: 20px;
+    }
+
+    .new-game {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      background-color: #f44336;
+      color: white;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .new-game:hover {
+      background-color: #d32f2f;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Rishi & Soni</h1>
+    <div class="board" id="board">
+      <!-- The tic-tac-toe board will be generated here -->
+    </div>
+    <div class="status" id="status"></div>
+    <button class="new-game" id="new-game">New Game</button>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const board = document.getElementById('board');
+      const status = document.getElementById('status');
+      const newGameButton = document.getElementById('new-game');
+
+      let currentPlayer = 'Rishi';
+      let winner = null;
+      let moves = 0;
+      const cells = [];
+
+      initializeBoard();
+
+      function initializeBoard() {
+        for (let i = 0; i < 9; i++) {
+          const cell = document.createElement('button');
+          cell.textContent = '';
+          cell.classList.add('cell');
+          cell.addEventListener('click', () => {
+            if (!cell.textContent && !winner) {
+              cell.textContent = currentPlayer;
+              moves++;
+              if (checkWinner()) {
+                winner = currentPlayer;
+                status.textContent = `Player ${winner} wins!`;
+              } else if (moves === 9) {
+                status.textContent = `It's a draw!`;
+              } else {
+                currentPlayer = currentPlayer === 'Rishi' ? 'Soni' : 'Rishi';
+                status.textContent = `Player ${currentPlayer}'s turn`;
+              }
+            }
+          });
+          board.appendChild(cell);
+          cells.push(cell);
+        }
+        status.textContent = `Player ${currentPlayer}'s turn`;
+      }
+
+      function checkWinner() {
+        const lines = [
+          [0, 1, 2],
+          [3, 4, 5],
+          [6, 7, 8],
+          [0, 3, 6],
+          [1, 4, 7],
+          [2, 5, 8],
+          [0, 4, 8],
+          [2, 4, 6],
+        ];
+        for (let line of lines) {
+          const [a, b, c] = line;
+          if (cells[a].textContent && cells[a].textContent === cells[b].textContent && cells[a].textContent === cells[c].textContent) {
+            return true;
+          }
+        }
+        return false;
+      }
+
+      newGameButton.addEventListener('click', () => {
+        currentPlayer = 'Rishi';
+        winner = null;
+        moves = 0;
+        cells.forEach(cell => {
+          cell.textContent = '';
+        });
+        status.textContent = `Player ${currentPlayer}'s turn`;
+      });
+    });
+  </script>
+</body>
+</html>
